@@ -7,3 +7,18 @@ wp-content/backups/
 wp-content/debug.log
 *.log
 .DS_Store
+
+# WordPress core
+/index.php
+/license.txt
+/readme.html
+/wp-*.php
+/xmlrpc.php
+/wp-admin/
+/wp-includes/
+
+/wp-content/index.php
+/wp-content/plugins/akismet/
+/wp-content/plugins/hello.php
+/wp-content/plugins/index.php
+/wp-content/themes/
