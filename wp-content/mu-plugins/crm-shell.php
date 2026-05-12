@@ -276,19 +276,26 @@ function crm_shell_render_home() {
                 margin-bottom: 28px;
             }
 
+            .crm-service-row {
+                display: flex;
+                justify-content: center;
+                gap: 18px;
+                flex-wrap: wrap;
+            }
+
             .crm-service-btn {
                 display: inline-flex;
                 align-items: center;
                 justify-content: center;
                 min-width: 220px;
-                min-height: 120px;
+                min-height: 110px;
                 padding: 18px 30px;
                 box-sizing: border-box;
                 border-radius: 22px;
                 background: #2563eb;
                 color: #ffffff;
                 text-decoration: none;
-                font-size: 36px;
+                font-size: 26px;
                 font-weight: 800;
                 letter-spacing: .12em;
                 box-shadow: 0 14px 30px rgba(37,99,235,.28);
@@ -312,7 +319,10 @@ function crm_shell_render_home() {
                 <div class="crm-big-logo">CRM</div>
                 <div class="crm-home-sub">Choose a service</div>
 
-                <a class="crm-service-btn" href="<?php echo esc_url(home_url('/dispetcher/')); ?>">CRM</a>
+                <div class="crm-service-row">
+                    <a class="crm-service-btn" href="<?php echo esc_url(home_url('/dispetcher/')); ?>">DISPETCHER</a>
+                    <a class="crm-service-btn" href="<?php echo esc_url(home_url('/estimates/')); ?>">ESTIMATES</a>
+                </div>
             </div>
         </div>
     </body>

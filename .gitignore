@@ -22,3 +22,6 @@ wp-content/debug.log
 /wp-content/plugins/hello.php
 /wp-content/plugins/index.php
 /wp-content/themes/
+
+# Local/generated estimates JSON exports
+private/estimates-json/
