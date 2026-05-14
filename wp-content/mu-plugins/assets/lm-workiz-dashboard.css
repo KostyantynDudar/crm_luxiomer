@@ -1,94 +1,77 @@
-html, body{
-  overflow-x:hidden!important;
-}
-*{
-  box-sizing:border-box;
-}
+html, body{overflow-x:hidden!important;}
+*{box-sizing:border-box;}
+
+.site-main,
+.entry-content,
+.wp-site-blocks,
 .lmw-dashboard{
-  width:100%;
-  max-width:100%;
-  padding:24px;
+  max-width:none!important;
+  width:100%!important;
+}
+
+.lmw-dashboard{
+  padding:18px 24px;
   font-family:Arial,sans-serif;
   overflow-x:hidden;
 }
-.lmw-dashboard h1{
-  margin:0 0 18px;
-  font-size:28px;
-}
-.lmw-kpis{
-  display:flex;
-  flex-wrap:wrap;
-  gap:14px;
-  margin-bottom:18px;
-}
+
+.lmw-dashboard h1{margin:0 0 16px;font-size:28px;}
+
+.lmw-kpis{display:flex;flex-wrap:wrap;gap:14px;margin-bottom:16px;}
 .lmw-kpis div{
+  background:#fff;border:1px solid #e5e7eb;border-radius:14px;
+  padding:12px 18px;min-width:150px;box-shadow:0 8px 24px rgba(15,23,42,.06);
+}
+.lmw-kpis b{display:block;font-size:28px;}
+.lmw-kpis span{color:#64748b;font-weight:700;}
+
+.lmw-filters{
+  display:grid;
+  grid-template-columns:2fr 1fr 1fr 1fr;
+  gap:10px;
+  margin-bottom:14px;
+}
+.lmw-filters input,
+.lmw-filters select{
+  width:100%;
+  padding:10px 12px;
+  border:1px solid #cbd5e1;
+  border-radius:10px;
   background:#fff;
-  border:1px solid #e5e7eb;
-  border-radius:14px;
-  padding:14px 18px;
-  min-width:150px;
-  box-shadow:0 8px 24px rgba(15,23,42,.06);
+  font-size:14px;
 }
-.lmw-kpis b{
-  display:block;
-  font-size:28px;
+
+.lmw-map-panel,
+.lmw-panel{
+  background:#fff;border:1px solid #e5e7eb;border-radius:16px;
+  padding:14px;box-shadow:0 10px 30px rgba(15,23,42,.06);
 }
-.lmw-kpis span{
-  color:#64748b;
-  font-weight:700;
-}
-.lmw-map-panel{
-  background:#fff;
-  border:1px solid #e5e7eb;
-  border-radius:16px;
-  padding:14px;
-  margin-bottom:18px;
-  box-shadow:0 10px 30px rgba(15,23,42,.06);
-}
-.lmw-map-panel h2,
-.lmw-panel h2{
-  margin:0 0 10px;
-  font-size:20px;
-}
+
+.lmw-map-panel{margin-bottom:16px;}
+.lmw-map-panel h2,.lmw-panel h2{margin:0 0 10px;font-size:20px;}
+
 #lmw-map{
   width:100%;
-  height:520px;
+  height:58vh;
+  min-height:480px;
   border-radius:14px;
   border:1px solid #e5e7eb;
   overflow:hidden;
 }
-.lmw-grid{
-  display:grid;
-  grid-template-columns:1fr;
-  gap:18px;
-}
-.lmw-panel{
-  width:100%;
-  max-width:100%;
-  overflow:hidden;
-  background:#fff;
-  border:1px solid #e5e7eb;
-  border-radius:16px;
-  padding:14px;
-  box-shadow:0 10px 30px rgba(15,23,42,.06);
-}
+
+.lmw-grid{display:grid;grid-template-columns:1fr;gap:16px;}
+.lmw-panel{width:100%;max-width:100%;overflow:hidden;}
+
 .lmw-table-wrap{
-  width:100%;
-  max-width:100%;
-  max-height:420px;
+  width:100%;max-width:100%;
+  max-height:360px;
   overflow:auto;
   border:1px solid #e5e7eb;
   border-radius:12px;
 }
 
-.lmw-table{
-  width:100%;
-  min-width:1200px;
-  border-collapse:collapse;
-  font-size:13px;
-}
-.lmw-table th,
-.lmw-table td{
+.lmw-table{width:100%;min-width:1200px;border-collapse:collapse;font-size:13px;}
+.lmw-table th,.lmw-table td{
   border-bottom:1px solid #e5e7eb;
   padding:8px 10px;
   text-align:left;
@@ -101,23 +84,60 @@ html, body{
   background:#f8fafc;
   font-weight:900;
 }
-.lmw-table tr:nth-child(even){
-  background:#fafafa;
+.lmw-table tr:nth-child(even){background:#fafafa;}
+.lmw-table a{font-weight:800;}
+
+.lmw-popup{font-size:13px;line-height:1.35;}
+.lmw-popup b{font-size:15px;}
+.lmw-popup__row{margin-top:5px;}
+.lmw-popup__label{color:#64748b;font-weight:700;}
+
+@media(max-width:900px){
+  .lmw-filters{grid-template-columns:1fr;}
+  #lmw-map{height:520px;}
 }
-.lmw-table a{
-  font-weight:800;
+
+/* LM Workiz full-width hard override */
+body.page-id-24 .entry-content,
+body.page-id-24 .wp-block-post-content,
+body.page-id-24 main,
+body.page-id-24 article,
+body.page-id-24 .site-content,
+body.page-id-24 .content-area,
+body.page-id-24 .container,
+body.page-id-24 .wrap {
+  width: 100% !important;
+  max-width: none !important;
+  margin-left: 0 !important;
+  margin-right: 0 !important;
 }
-.lmw-popup{
-  font-size:13px;
-  line-height:1.35;
+
+body.page-id-24 .lmw-dashboard {
+  width: calc(100vw - 48px) !important;
+  max-width: none !important;
+  margin-left: calc(50% - 50vw + 24px) !important;
+  margin-right: calc(50% - 50vw + 24px) !important;
 }
-.lmw-popup b{
-  font-size:15px;
+
+body.page-id-24 #lmw-map {
+  height: 62vh;
 }
-.lmw-popup__row{
-  margin-top:5px;
+
+/* Force Workiz dashboard out of WP constrained layout */
+:where(.is-layout-constrained) > .lmw-dashboard,
+:where(.wp-block-post-content) > .lmw-dashboard,
+.entry-content > .lmw-dashboard,
+.lmw-dashboard {
+  width: calc(100vw - 48px) !important;
+  max-width: calc(100vw - 48px) !important;
+  margin-left: calc(50% - 50vw + 24px) !important;
+  margin-right: calc(50% - 50vw + 24px) !important;
 }
-.lmw-popup__label{
-  color:#64748b;
-  font-weight:700;
+
+.lmw-map-panel,
+.lmw-panel,
+.lmw-filters,
+.lmw-kpis {
+  width: 100% !important;
+  max-width: 100% !important;
 }

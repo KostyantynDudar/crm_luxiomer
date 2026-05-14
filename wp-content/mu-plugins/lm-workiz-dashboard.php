@@ -53,14 +53,14 @@ add_shortcode('lm_workiz_dashboard', function () {
         'lm-workiz-dashboard',
         content_url('mu-plugins/assets/lm-workiz-dashboard.css'),
         [],
-        '0.2.0'
+        '0.2.1'
     );
 
     wp_enqueue_script(
         'lm-workiz-dashboard',
         content_url('mu-plugins/assets/lm-workiz-dashboard.js'),
         ['lmw-leaflet-js'],
-        '0.2.0',
+        '0.2.1',
         true
     );
 
@@ -72,7 +72,7 @@ add_shortcode('lm_workiz_dashboard', function () {
 
     ob_start();
     ?>
-    <div class="lmw-dashboard">
+    <div class="lmw-dashboard" style="width:calc(100vw - 48px)!important;max-width:calc(100vw - 48px)!important;margin-left:calc(50% - 50vw + 24px)!important;margin-right:calc(50% - 50vw + 24px)!important;">
       <h1>Workiz Estimates & Invoices Analytics</h1>
 
       <div class="lmw-kpis">
@@ -80,6 +80,21 @@ add_shortcode('lm_workiz_dashboard', function () {
         <div><b><?php echo esc_html(count($invoices)); ?></b><span>Invoices</span></div>
         <div><b><?php echo esc_html(count($map_items)); ?></b><span>Map points</span></div>
       </div>
+
+      <section class="lmw-filters">
+        <input id="lmw-search" type="search" placeholder="Search client, ID, job, address...">
+        <select id="lmw-type">
+          <option value="">All types</option>
+          <option value="estimate">Estimates</option>
+          <option value="invoice">Invoices</option>
+        </select>
+        <select id="lmw-status">
+          <option value="">All statuses</option>
+        </select>
+        <select id="lmw-manager">
+          <option value="">All managers</option>
+        </select>
+      </section>
 
       <section class="lmw-map-panel">
         <h2>Map</h2>
@@ -98,7 +113,7 @@ add_shortcode('lm_workiz_dashboard', function () {
               </thead>
               <tbody>
               <?php foreach ($estimates as $r): ?>
-                <tr>
+                <tr data-type="estimate" data-status="<?php echo esc_attr($r['status']); ?>" data-manager="<?php echo esc_attr($r['created_by_name']); ?>" data-search="<?php echo esc_attr(strtolower($r['id'].' '.$r['client_name'].' '.$r['address'].' '.$r['job_title'].' '.$r['status'].' '.$r['created_by_name'])); ?>">
                   <td><?php echo esc_html($r['id']); ?></td>
                   <td><?php echo esc_html($r['status']); ?></td>
                   <td><?php echo esc_html($r['client_name']); ?></td>
@@ -127,7 +142,7 @@ add_shortcode('lm_workiz_dashboard', function () {
               </thead>
               <tbody>
               <?php foreach ($invoices as $r): ?>
-                <tr>
+                <tr data-type="invoice" data-status="<?php echo esc_attr($r['status_full']); ?>" data-manager="<?php echo esc_attr($r['created_by_name']); ?>" data-search="<?php echo esc_attr(strtolower($r['id'].' '.$r['number'].' '.$r['client_name'].' '.$r['job_serial'].' '.$r['status_full'])); ?>">
                   <td><?php echo esc_html($r['id']); ?></td>
                   <td><?php echo esc_html($r['number']); ?></td>
                   <td><?php echo esc_html($r['status_full']); ?></td>
