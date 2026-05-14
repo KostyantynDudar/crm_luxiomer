@@ -69,11 +69,25 @@ class="lmw-popup__row"><span class="lmw-popup__label">Address:</span> ${esc(item
 
     const rows = Array.from(document.querySelectorAll('.lmw-table tbody tr'));
 
-    fillSelect(status, unique(rows.map(r => r.dataset.status).filter(Boolean)));
-    fillSelect(manager, unique(rows.map(r => r.dataset.manager).filter(Boolean)));
+    function rebuildDynamicFilters(){
+      const currentType = type.value || '';
+      const scopedRows = currentType ? rows.filter(r => r.dataset.type === currentType) : rows;
 
-    [search,type,status,manager].forEach(el => el && el.addEventListener('input', apply));
-    [type,status,manager].forEach(el => el && el.addEventListener('change', apply));
+      rebuildSelect(status, 'All statuses', unique(scopedRows.map(r => r.dataset.status).filter(Boolean)));
+      rebuildSelect(manager, 'All managers', unique(scopedRows.map(r => r.dataset.manager).filter(Boolean)));
+    }
+
+    rebuildDynamicFilters();
+
+    [search,status,manager].forEach(el => el && el.addEventListener('input', apply));
+    [status,manager].forEach(el => el && el.addEventListener('change', apply));
+
+    if (type) {
+      type.addEventListener('change', function(){
+        rebuildDynamicFilters();
+        apply();
+      });
+    }
 
     function apply(){
       const q = (search.value || '').toLowerCase().trim();
@@ -114,8 +128,14 @@ class="lmw-popup__row"><span class="lmw-popup__label">Address:</span> ${esc(item
     }
   }
 
-  function fillSelect(select, values){
+  function rebuildSelect(select, label, values){
     if (!select) return;
+    select.innerHTML = '';
+    const first = document.createElement('option');
+    first.value = '';
+    first.textContent = label;
+    select.appendChild(first);
+
     values.forEach(v => {
       const o = document.createElement('option');
       o.value = v;
