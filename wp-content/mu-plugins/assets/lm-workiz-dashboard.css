@@ -1,0 +1,123 @@
+html, body{
+  overflow-x:hidden!important;
+}
+*{
+  box-sizing:border-box;
+}
+.lmw-dashboard{
+  width:100%;
+  max-width:100%;
+  padding:24px;
+  font-family:Arial,sans-serif;
+  overflow-x:hidden;
+}
+.lmw-dashboard h1{
+  margin:0 0 18px;
+  font-size:28px;
+}
+.lmw-kpis{
+  display:flex;
+  flex-wrap:wrap;
+  gap:14px;
+  margin-bottom:18px;
+}
+.lmw-kpis div{
+  background:#fff;
+  border:1px solid #e5e7eb;
+  border-radius:14px;
+  padding:14px 18px;
+  min-width:150px;
+  box-shadow:0 8px 24px rgba(15,23,42,.06);
+}
+.lmw-kpis b{
+  display:block;
+  font-size:28px;
+}
+.lmw-kpis span{
+  color:#64748b;
+  font-weight:700;
+}
+.lmw-map-panel{
+  background:#fff;
+  border:1px solid #e5e7eb;
+  border-radius:16px;
+  padding:14px;
+  margin-bottom:18px;
+  box-shadow:0 10px 30px rgba(15,23,42,.06);
+}
+.lmw-map-panel h2,
+.lmw-panel h2{
+  margin:0 0 10px;
+  font-size:20px;
+}
+#lmw-map{
+  width:100%;
+  height:520px;
+  border-radius:14px;
+  border:1px solid #e5e7eb;
+  overflow:hidden;
+}
+.lmw-grid{
+  display:grid;
+  grid-template-columns:1fr;
+  gap:18px;
+}
+.lmw-panel{
+  width:100%;
+  max-width:100%;
+  overflow:hidden;
+  background:#fff;
+  border:1px solid #e5e7eb;
+  border-radius:16px;
+  padding:14px;
+  box-shadow:0 10px 30px rgba(15,23,42,.06);
+}
+.lmw-table-wrap{
+  width:100%;
+  max-width:100%;
+  max-height:420px;
+  overflow:auto;
+  border:1px solid #e5e7eb;
+  border-radius:12px;
+}
+
+.lmw-table{
+  width:100%;
+  min-width:1200px;
+  border-collapse:collapse;
+  font-size:13px;
+}
+.lmw-table th,
+.lmw-table td{
+  border-bottom:1px solid #e5e7eb;
+  padding:8px 10px;
+  text-align:left;
+  white-space:nowrap;
+}
+.lmw-table th{
+  position:sticky;
+  top:0;
+  z-index:5;
+  background:#f8fafc;
+  font-weight:900;
+}
+.lmw-table tr:nth-child(even){
+  background:#fafafa;
+}
+.lmw-table a{
+  font-weight:800;
+}
+.lmw-popup{
+  font-size:13px;
+  line-height:1.35;
+}
+.lmw-popup b{
+  font-size:15px;
+}
+.lmw-popup__row{
+  margin-top:5px;
+}
+.lmw-popup__label{
+  color:#64748b;
+  font-weight:700;
+}
