@@ -44,7 +44,7 @@ add_shortcode('lm_workiz_dashboard', function () {
 
     $estimates = lmw_load_estimates();
     $invoices  = lmw_load_invoices();
-    $map_items = lmw_dashboard_public_objects($estimates);
+    $map_items = lmw_dashboard_public_objects(array_merge($estimates, $invoices));
 
     wp_enqueue_style('lmw-leaflet-css', 'https://unpkg.com/leaflet@1.9.4/dist/leaflet.css', [], '1.9.4');
     wp_enqueue_script('lmw-leaflet-js', 'https://unpkg.com/leaflet@1.9.4/dist/leaflet.js', [], '1.9.4', true);

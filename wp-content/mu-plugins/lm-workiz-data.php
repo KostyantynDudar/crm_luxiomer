@@ -129,6 +129,8 @@ function lmw_load_invoices($limit = 0) {
     $rows = $json['rows'] ?? [];
     if (!is_array($rows)) return [];
 
+    $geo_idx = lmw_build_estimate_geo_index_v1();
+
     $out = [];
     $i = 0;
 
@@ -137,6 +139,7 @@ function lmw_load_invoices($limit = 0) {
         if (!is_array($r)) continue;
 
         $client = (string)($r['client_full_name'] ?? trim(($r['first_name'] ?? '') . ' ' . ($r['last_name'] ?? '')));
+        $geo = lmw_match_invoice_geo_v1($r, $geo_idx);
 
         $out[] = [
             'object_type' => 'invoice',
@@ -151,7 +154,7 @@ function lmw_load_invoices($limit = 0) {
             'company_name' => (string)($r['client_company_name'] ?? ''),
             'phone' => (string)($r['primary_phone'] ?? ''),
             'email' => (string)($r['email_address'] ?? ''),
-            'address' => '',
+            'address' => $geo['address'] ?? '',
             'job_id' => (string)($r['job_id'] ?? ''),
             'job_serial' => (string)($r['job_serial'] ?? $r['job'] ?? ''),
             'job_title' => (string)($r['job_name'] ?? ''),
@@ -173,8 +176,10 @@ function lmw_load_invoices($limit = 0) {
             'items_count' => 0,
             'has_files' => false,
             'has_signature' => false,
-            'lat' => '',
-            'lng' => '',
+            'lat' => $geo['lat'] ?? '',
+            'lng' => $geo['lng'] ?? '',
+            'geo_match_type' => $geo['match_type'] ?? 'no_geo',
+            'geo_source' => $geo['source'] ?? '',
             'url' => !empty($r['uuid']) ? 'https://app.workiz.com/root/invoice/' . rawurlencode($r['uuid']) : '',
             'source_file' => 'workiz-invoices-index.json',
         ];
@@ -190,4 +195,86 @@ function lmw_load_all_workiz_objects($limit_each = 0) {
         lmw_load_estimates($limit_each),
         lmw_load_invoices($limit_each)
     );
+}
+
+/**
+ * Build temporary geo index from estimates.
+ * Used to attach coordinates to invoices until invoice/job detail geo source is available.
+ */
+function lmw_build_estimate_geo_index_v1() {
+    static $idx = null;
+    if ($idx !== null) return $idx;
+
+    $idx = [
+        'job_id' => [],
+        'job_serial' => [],
+        'client_unique' => [],
+    ];
+
+    $client_bucket = [];
+    $estimates = lmw_load_estimates();
+
+    foreach ($estimates as $e) {
+        if (empty($e['lat']) || empty($e['lng'])) continue;
+
+        $geo = [
+            'lat' => $e['lat'],
+            'lng' => $e['lng'],
+            'address' => $e['address'] ?? '',
+            'source' => 'estimate:' . ($e['id'] ?? ''),
+        ];
+
+        if (!empty($e['job_id'])) {
+            $idx['job_id'][(string)$e['job_id']] = $geo + ['match_type' => 'job_id'];
+        }
+
+        if (!empty($e['job_serial'])) {
+            $idx['job_serial'][(string)$e['job_serial']] = $geo + ['match_type' => 'job_serial'];
+        }
+
+        $client_key = strtolower(trim($e['client_name'] ?? ''));
+        if ($client_key !== '') {
+            $client_bucket[$client_key][] = $geo + ['match_type' => 'client_unique'];
+        }
+    }
+
+    foreach ($client_bucket as $client_key => $items) {
+        if (count($items) === 1) {
+            $idx['client_unique'][$client_key] = $items[0];
+        }
+    }
+
+    return $idx;
+}
+
+function lmw_match_invoice_geo_v1($invoice_row, $geo_idx = null) {
+    if ($geo_idx === null) {
+        $geo_idx = lmw_build_estimate_geo_index_v1();
+    }
+
+    $job_id = (string)($invoice_row['job_id'] ?? '');
+    $job_serial = (string)($invoice_row['job_serial'] ?? $invoice_row['job'] ?? '');
+
+    $client = (string)($invoice_row['client_full_name'] ?? trim(($invoice_row['first_name'] ?? '') . ' ' . ($invoice_row['last_name'] ?? '')));
+    $client_key = strtolower(trim($client));
+
+    if ($job_id !== '' && isset($geo_idx['job_id'][$job_id])) {
+        return $geo_idx['job_id'][$job_id];
+    }
+
+    if ($job_serial !== '' && isset($geo_idx['job_serial'][$job_serial])) {
+        return $geo_idx['job_serial'][$job_serial];
+    }
+
+    if ($client_key !== '' && isset($geo_idx['client_unique'][$client_key])) {
+        return $geo_idx['client_unique'][$client_key];
+    }
+
+    return [
+        'lat' => '',
+        'lng' => '',
+        'address' => '',
+        'source' => '',
+        'match_type' => 'no_geo',
+    ];
 }
