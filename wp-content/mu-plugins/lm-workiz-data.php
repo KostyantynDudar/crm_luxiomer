@@ -158,11 +158,11 @@ function lmw_load_invoices($limit = 0) {
             'job_id' => (string)($r['job_id'] ?? ''),
             'job_serial' => (string)($r['job_serial'] ?? $r['job'] ?? ''),
             'job_title' => (string)($r['job_name'] ?? ''),
-            'job_status' => '',
-            'lead_source' => '',
-            'created_by_name' => '',
-            'created_by_id' => '',
-            'techs' => '',
+            'job_status' => $geo['job_status'] ?? '',
+            'lead_source' => $geo['lead_source'] ?? '',
+            'created_by_name' => $geo['created_by_name'] ?? '',
+            'created_by_id' => $geo['created_by_id'] ?? '',
+            'techs' => $geo['techs'] ?? '',
             'created' => (string)($r['created'] ?? ''),
             'updated' => '',
             'sent' => (string)($r['sent'] ?? ''),
@@ -222,6 +222,11 @@ function lmw_build_estimate_geo_index_v1() {
             'lng' => $e['lng'],
             'address' => $e['address'] ?? '',
             'source' => 'estimate:' . ($e['id'] ?? ''),
+            'created_by_name' => $e['created_by_name'] ?? '',
+            'created_by_id' => $e['created_by_id'] ?? '',
+            'techs' => $e['techs'] ?? '',
+            'lead_source' => $e['lead_source'] ?? '',
+            'job_status' => $e['job_status'] ?? '',
         ];
 
         if (!empty($e['job_id'])) {
