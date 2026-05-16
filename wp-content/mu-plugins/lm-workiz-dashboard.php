@@ -37,6 +37,21 @@ function lmw_dashboard_public_objects($items) {
     return $out;
 }
 
+
+function lmw_dashboard_status_group($r) {
+    $status = strtolower((string)(($r['status_full'] ?? '') ?: ($r['status'] ?? '')));
+    $due = (float)($r['amount_due'] ?? 0);
+    $paid = (float)($r['paid_total'] ?? 0);
+
+    if (preg_match('/overdue/', $status)) return 'overdue';
+    if (preg_match('/won|paid|completed/', $status) || ($paid > 0 && $due <= 0)) return 'won-paid';
+    if (preg_match('/lost|declin|cancel/', $status)) return 'lost';
+    if (preg_match('/unsent|not sent|draft/', $status)) return 'unsent';
+    if ($due > 0) return 'unpaid';
+
+    return 'other';
+}
+
 add_shortcode('lm_workiz_dashboard', function () {
     if (!is_user_logged_in()) {
         return '<p>Please log in.</p>';
@@ -80,20 +95,57 @@ add_shortcode('lm_workiz_dashboard', function () {
         <div><b><?php echo esc_html(count($invoices)); ?></b><span>Invoices</span></div>
         <div><b><?php echo esc_html(count($map_items)); ?></b><span>Map points</span></div>
       </div>
+      <section class="lmw-quick">
+        <button type="button" data-quick="">All</button>
+        <button type="button" data-quick="estimate">Estimates</button>
+        <button type="button" data-quick="invoice">Invoices</button>
+        <button type="button" data-quick="won-paid">Won / Paid</button>
+        <button type="button" data-quick="due">Has Due</button>
+        <button type="button" data-quick="overdue">Overdue</button>
+        <button type="button" data-quick="mapped">Mapped</button>
+        <button type="button" data-quick="no-geo">No Geo</button>
+      </section>
 
       <section class="lmw-filters">
         <input id="lmw-search" type="search" placeholder="Search client, ID, job, address...">
+
         <select id="lmw-type">
           <option value="">All types</option>
           <option value="estimate">Estimates</option>
           <option value="invoice">Invoices</option>
         </select>
+
+        <select id="lmw-status-group">
+          <option value="">All status groups</option>
+          <option value="won-paid">Won / Paid</option>
+          <option value="unpaid">Unpaid / Has Due</option>
+          <option value="overdue">Overdue</option>
+          <option value="lost">Lost / Declined</option>
+          <option value="unsent">Unsent / Not sent</option>
+        </select>
+
         <select id="lmw-status">
           <option value="">All statuses</option>
         </select>
+
         <select id="lmw-manager">
           <option value="">All managers</option>
         </select>
+
+        <select id="lmw-tech">
+          <option value="">All techs</option>
+        </select>
+
+        <select id="lmw-source">
+          <option value="">All sources</option>
+        </select>
+
+        <select id="lmw-geo">
+          <option value="">All geo matches</option>
+        </select>
+
+        <input id="lmw-total-min" type="number" min="0" step="100" placeholder="Total from">
+        <input id="lmw-total-max" type="number" min="0" step="100" placeholder="Total to">
       </section>
 
       <section class="lmw-map-panel">
@@ -113,7 +165,7 @@ add_shortcode('lm_workiz_dashboard', function () {
               </thead>
               <tbody>
               <?php foreach ($estimates as $r): ?>
-                <tr data-type="estimate" data-status="<?php echo esc_attr($r['status']); ?>" data-manager="<?php echo esc_attr($r['created_by_name']); ?>" data-search="<?php echo esc_attr(strtolower($r['id'].' '.$r['client_name'].' '.$r['address'].' '.$r['job_title'].' '.$r['status'].' '.$r['created_by_name'])); ?>">
+                <tr data-type="estimate" data-status="<?php echo esc_attr($r['status']); ?>" data-status-group="<?php echo esc_attr(lmw_dashboard_status_group($r)); ?>" data-manager="<?php echo esc_attr($r['created_by_name']); ?>" data-tech="<?php echo esc_attr($r['techs']); ?>" data-source="<?php echo esc_attr($r['lead_source']); ?>" data-geo="original" data-total="<?php echo esc_attr($r['total']); ?>" data-due="<?php echo esc_attr($r['amount_due']); ?>" data-search="<?php echo esc_attr(strtolower($r['id'].' '.$r['client_name'].' '.$r['address'].' '.$r['job_title'].' '.$r['status'].' '.$r['created_by_name'].' '.$r['techs'].' '.$r['lead_source'])); ?>">
                   <td><?php echo esc_html($r['id']); ?></td>
                   <td><?php echo esc_html($r['status']); ?></td>
                   <td><?php echo esc_html($r['client_name']); ?></td>
@@ -142,7 +194,7 @@ add_shortcode('lm_workiz_dashboard', function () {
               </thead>
               <tbody>
               <?php foreach ($invoices as $r): ?>
-                <tr data-type="invoice" data-status="<?php echo esc_attr($r['status_full']); ?>" data-manager="<?php echo esc_attr($r['created_by_name']); ?>" data-search="<?php echo esc_attr(strtolower($r['id'].' '.$r['number'].' '.$r['client_name'].' '.$r['job_serial'].' '.$r['status_full'])); ?>">
+                <tr data-type="invoice" data-status="<?php echo esc_attr($r['status_full']); ?>" data-status-group="<?php echo esc_attr(lmw_dashboard_status_group($r)); ?>" data-manager="<?php echo esc_attr($r['created_by_name']); ?>" data-tech="<?php echo esc_attr($r['techs']); ?>" data-source="<?php echo esc_attr($r['lead_source']); ?>" data-geo="<?php echo esc_attr($r['geo_match_type'] ?? 'no_geo'); ?>" data-total="<?php echo esc_attr($r['total']); ?>" data-due="<?php echo esc_attr($r['amount_due']); ?>" data-search="<?php echo esc_attr(strtolower($r['id'].' '.$r['number'].' '.$r['client_name'].' '.$r['job_serial'].' '.$r['status_full'].' '.$r['email'].' '.$r['phone'].' '.$r['created_by_name'].' '.$r['techs'].' '.$r['lead_source'])); ?>">
                   <td><?php echo esc_html($r['id']); ?></td>
                   <td><?php echo esc_html($r['number']); ?></td>
                   <td><?php echo esc_html($r['status_full']); ?></td>

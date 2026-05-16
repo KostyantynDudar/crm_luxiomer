@@ -141,3 +141,40 @@ body.page-id-24 #lmw-map {
   width: 100% !important;
   max-width: 100% !important;
 }
+
+.lmw-quick{
+  display:flex;
+  flex-wrap:wrap;
+  gap:8px;
+  margin-bottom:12px;
+}
+.lmw-quick button{
+  border:1px solid #cbd5e1;
+  background:#fff;
+  border-radius:999px;
+  padding:8px 12px;
+  font-size:13px;
+  font-weight:800;
+  cursor:pointer;
+}
+.lmw-quick button:hover,
+.lmw-quick button.is-active{
+  background:#0f172a;
+  color:#fff;
+  border-color:#0f172a;
+}
+
+.lmw-filters{
+  grid-template-columns:2fr repeat(5, minmax(140px, 1fr));
+}
+
+@media(max-width:1200px){
+  .lmw-filters{
+    grid-template-columns:1fr 1fr 1fr;
+  }
+}
+@media(max-width:700px){
+  .lmw-filters{
+    grid-template-columns:1fr;
+  }
+}
